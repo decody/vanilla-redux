@@ -1,5 +1,13 @@
 # Vanilla-Redux
 Vanilla-Redux and React-Redux
 
-``hash
-yarn add redux``
+
+app start
+```hash
+yarn add redux
+```
+
+To do in React
+```
+yarn add react-redux react-router-dom
+```
