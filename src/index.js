@@ -1,70 +1,75 @@
 import { createStore } from "redux";
 
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const ul = document.querySelector("ul");
 
-const add = document.getElementById("add");
-const minus = document.getElementById("minus");
-const number = document.querySelector("span");
+const ADD_TODO = "ADD_TODO";
+const DELETE_TODO = "DELETE_TODO";
 
-number.innerText = 0;
-
-const ADD = "ADD";
-const MINUS = "MINUS";
-
-// reducer in redux
-const countModifier = (count = 0, action) => {
-    switch (action.type) {
-        case ADD:
-            return count + 1;
-        case MINUS:
-            return count - 1;
-        default:
-            return count;
+const addToDo = (text) => {
+    return {
+        type: ADD_TODO, 
+        text
     }
 };
 
-const countStore = createStore(countModifier);
-
-const onChange = () => {
-    number.innerText = countStore.getState();
+const deleteToDo = id => {
+    return {
+        type: DELETE_TODO,
+        id
+    }
 };
 
-countStore.subscribe(onChange);
-
-const handleAdd = () => {
-    countStore.dispatch({ type: ADD });
+const reducer = (state = [], action) => {
+    switch (action.type) {
+        case ADD_TODO:
+            return [...state, { text: action.text, id: Date.now() }];
+        case DELETE_TODO:
+            const cleaned = state.filter(toDo => toDo.id !== action.id);
+            return cleaned;
+        default:
+            return state;
+    }
 };
 
-const handleMinus = () => {
-    countStore.dispatch({ type: MINUS })
+const store = createStore(reducer);
+
+store.subscribe(() => console.log(store.getState()));
+
+
+const dispatchAddToDo = text => {
+    store.dispatch(addToDo(text));
 };
 
-add.addEventListener("click", handleAdd);
-minus.addEventListener("click", handleMinus);
+const dispatchDeleteToDo = e => {
+    const id = parseInt(e.target.parentNode.id);
+    store.dispatch(deleteToDo(id));
+};
 
-// countStore.dispatch({ type: "ADD" });
-// countStore.dispatch({ type: "MINUS" });
-// console.log(countStore.getState());
+const paintToDos = () => {
+    const toDos = store.getState();
+    ul.innerHTML = "";
+    toDos.forEach(toDo => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.innerText = "DELETE";
+        btn.addEventListener("click", dispatchDeleteToDo);
+        li.id = toDo.id;
+        li.innerText = toDo.text;
+        li.appendChild(btn);
+        ul.appendChild(li);
+    })
+}
 
-/*
- * Counting in Vanilla JS
- */
+store.subscribe(paintToDos);
 
-// let count = 0;
-// number.innerText = count;
 
-// const updateText = () => {
-//     number.innerText = count;
-// };
+const onSubmit = e => {
+    e.preventDefault();
+    const toDo = input.value;
+    input.value = "";
+    dispatchAddToDo(toDo);
+}
 
-// const handleAdd = () => {
-//     count = count + 1;
-//     updateText();
-// };
-
-// const handleMinus = () => {
-//     count = count - 1;
-//     updateText();
-// };
-
-// add.addEventListener("click", handleAdd);
-// minus.addEventListener("click", handleMinus);
+form.addEventListener("submit", onSubmit);
