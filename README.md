@@ -1,13 +1,17 @@
 # Vanilla-Redux
 Vanilla-Redux and React-Redux
 
+### Launch this application
+```hash
+yarn start
+```
 
-app start
+### Install redux
 ```hash
 yarn add redux
 ```
 
-To do in React
-```
+### Install redux and router dom in react
+```hash
 yarn add react-redux react-router-dom
 ```
