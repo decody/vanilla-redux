@@ -9,17 +9,17 @@ function Home({ toDos, addToDo }) {
         setText(e.target.value);
     }
     function onSubmit(e) {
-        e.prevenetDefault();
+        e.preventDefault();
         addToDo(text);
         setText("");
     }
     return (
         <>
             <h1>To Do</h1>
-            <from onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
                 <input type="text" value={text} onChange={onChange} />
                 <button>Add</button>
-            </from>
+            </form>
             <ul>
                 {toDos.map(toDo => (
                     <ToDo {...toDo} key={toDo.id} />
